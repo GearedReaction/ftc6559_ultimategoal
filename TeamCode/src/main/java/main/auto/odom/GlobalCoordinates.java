@@ -21,7 +21,6 @@ public class GlobalCoordinates implements Runnable {
 
     double encoderWheelDistance;
     double middleEncoderTickOffset;
-
     int sleepTime;
 
     File sideWheelsSeparationFile = AppUtil.getInstance().getSettingsFile("sideWheelsSeparationFile");
