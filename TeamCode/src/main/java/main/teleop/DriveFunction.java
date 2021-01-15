@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ftc6559;
+package main.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,7 +10,7 @@ import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENC
 import static java.lang.Math.abs;
 
 
-public abstract class DriveFunctionCopy extends OpMode {
+public abstract class DriveFunction extends OpMode {
 
     public final double TICKS_PER_ROTATION = 747;
     public final double TICKS_PER_INCH = 140;
