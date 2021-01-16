@@ -51,26 +51,14 @@ public class MecanumDrive extends OpMode {
 
         maxMPower = Math.max(max(max(abs(LFPower),abs(RFPower)),abs(RBPower)),abs(LBPower));
 
-        if (speedMode == -1) {
-//            switch (direction) {
-//                case "f":
-//                    direction = "b";
-//                    break;
-//                case "r":
-//                    direction = "l";
-//                    break;
-//                case "l":
-//                    direction = "r";
-//                    break;
-//                case "b":
-//                    direction = "f";
-//                    break;
-//
-//            }
+        maxMPower = maxMPower > 1 ? maxMPower : 1;
+        if (speedMode == 2) {
+            maxMPower *= speedMode;
+            maxMPower = maxMPower > 1 ? maxMPower : 1;
         } else {
             maxMPower *= speedMode;
         }
-        maxMPower = maxMPower > 1 ? maxMPower : 1;
+
 
         LFPower /= maxMPower;
         RFPower /= maxMPower;
