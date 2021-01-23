@@ -9,13 +9,15 @@ import static java.lang.StrictMath.abs;
 @TeleOp(name = "RV", group = "Drives")
 public class TeleOp2 extends OpMode {
 
-    DcMotor LeftFrontMotor, RightFrontMotor, LeftBackMotor, RightBackMotor;
+    DcMotor LeftFrontMotor, RightFrontMotor, LeftBackMotor, RightBackMotor, flyWheelMotor;
 
     public void init() {
         LeftFrontMotor = hardwareMap.dcMotor.get("LeftFrontMotor");
         RightFrontMotor = hardwareMap.dcMotor.get("RightFrontMotor");
         LeftBackMotor = hardwareMap.dcMotor.get("LeftBackMotor");
         RightBackMotor = hardwareMap.dcMotor.get("RightBackMotor");
+
+        flyWheelMotor = hardwareMap.dcMotor.get("flyWheelMotor");
 
     }
 
