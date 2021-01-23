@@ -36,7 +36,7 @@ public class MecanumDrive extends OpMode {
             speedMode = 0.25;
         } else if (gamepad1.dpad_right) {
             //Normal
-            speedMode = 0;
+            speedMode = 1;
         } else if (gamepad1.dpad_left) {
             //Reverse
             speedMode = -1;
