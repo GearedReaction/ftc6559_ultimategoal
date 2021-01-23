@@ -61,11 +61,11 @@ public class MecanumDrive extends OpMode {
             wobbleArm.setPosition(armPosition);
         }
         clawPosition = wobbleClaw.getPosition();
-        while (gamepad1.right_bumper && clawPosition < 1) {
+        while (gamepad1.right_bumper && clawPosition < clawOpenPos) {
             clawPosition += 0.01;
             wobbleClaw.setPosition(clawPosition);
         }
-        while (gamepad1.left_bumper && clawPosition > 0) {
+        while (gamepad1.left_bumper && clawPosition > clawClosedPos) {
             clawPosition -= 0.01;
             wobbleClaw.setPosition(clawPosition);
         }
