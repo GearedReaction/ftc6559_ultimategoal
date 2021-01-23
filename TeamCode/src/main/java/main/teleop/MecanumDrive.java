@@ -28,16 +28,16 @@ public class MecanumDrive extends OpMode {
     public void loop(){
         mecanumDrive(gamepad1.left_stick_x,-gamepad1.left_stick_y,gamepad1.right_stick_x);
         //Modes depending on Dpad Input
-        if (gamepad1.dpad_up) {
-            //TurboMode
-            speedMode = 2;
-        } else if (gamepad1.dpad_down) {
+        if (gamepad1.dpad_right) {
             //Slow Mode
+            speedMode = 0.5;
+        } else if (gamepad1.dpad_left) {
+            //Super Slow Mode
             speedMode = 0.25;
-        } else if (gamepad1.dpad_right) {
+        } else if (gamepad1.dpad_up) {
             //Normal
             speedMode = 1;
-        } else if (gamepad1.dpad_left) {
+        } else if (gamepad1.dpad_down) {
             //Reverse
             speedMode = -1;
         }
@@ -52,12 +52,7 @@ public class MecanumDrive extends OpMode {
         maxMPower = Math.max(max(max(abs(LFPower),abs(RFPower)),abs(RBPower)),abs(LBPower));
 
         maxMPower = maxMPower > 1 ? maxMPower : 1;
-        if (speedMode == 2) {
-            maxMPower *= speedMode;
-            maxMPower = maxMPower > 1 ? maxMPower : 1;
-        } else {
-            maxMPower *= speedMode;
-        }
+        maxMPower *= speedMode;
 
 
         LFPower /= maxMPower;
