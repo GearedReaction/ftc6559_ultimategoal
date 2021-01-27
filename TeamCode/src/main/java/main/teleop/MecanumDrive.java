@@ -20,6 +20,7 @@ public class MecanumDrive extends OpMode {
     double armPosition, clawPosition;
     double clawOpenPos = 0.2;
     double clawClosedPos = 0.05;
+    double servoSpeed = 0.5;
 
     public void init(){
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
@@ -53,20 +54,20 @@ public class MecanumDrive extends OpMode {
 
         armPosition = wobbleArm.getPosition();
         while (gamepad1.right_trigger > 0.1 && armPosition < 1 ) {
-            armPosition += gamepad1.right_trigger * 0.05;
+            armPosition += gamepad1.right_trigger * servoSpeed;
             wobbleArm.setPosition(armPosition);
         }
         while (gamepad1.left_trigger > 0.1 && armPosition > 0 ) {
-            armPosition -= gamepad1.left_trigger * 0.05;
+            armPosition -= gamepad1.left_trigger * servoSpeed;
             wobbleArm.setPosition(armPosition);
         }
         clawPosition = wobbleClaw.getPosition();
         while (gamepad1.right_bumper && clawPosition < clawOpenPos) {
-            clawPosition += 0.01;
+            clawPosition += servoSpeed;
             wobbleClaw.setPosition(clawPosition);
         }
         while (gamepad1.left_bumper && clawPosition > clawClosedPos) {
-            clawPosition -= 0.01;
+            clawPosition -= servoSpeed;
             wobbleClaw.setPosition(clawPosition);
         }
     }
