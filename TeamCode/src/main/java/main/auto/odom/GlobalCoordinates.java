@@ -67,7 +67,6 @@ public class GlobalCoordinates implements Runnable {
 
     public void stop(){ isRunning = false;}
 
-
     @Override
     public void run() {
         while (isRunning){
