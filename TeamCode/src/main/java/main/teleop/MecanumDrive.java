@@ -99,6 +99,7 @@ public class MecanumDrive extends OpMode {
         RFPower /= maxMPower;
         LBPower /= maxMPower;
         RBPower /= maxMPower;
+       
 
         leftFrontMotor.setPower(LFPower);
         leftBackMotor.setPower(LBPower);
