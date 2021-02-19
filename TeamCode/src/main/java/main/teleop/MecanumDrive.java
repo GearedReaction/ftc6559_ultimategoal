@@ -12,10 +12,15 @@ import static java.lang.Math.*;
 
 public class MecanumDrive extends OpMode {
     DcMotor leftFrontMotor, leftBackMotor, rightFrontMotor, rightBackMotor;
+    Servo wobbleArm, wobbleClaw;
     double leftX, leftY;
     double LFPower,RFPower,LBPower,RBPower;
     double maxMPower;
     double speedMode = 1;
+    double armPosition, clawPosition;
+    double clawOpenPos = 0.2;
+    double clawClosedPos = 0.05;
+    double servoSpeed = 0.5;
 
     public void init(){
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
@@ -23,8 +28,11 @@ public class MecanumDrive extends OpMode {
         rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
         rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
 
+        wobbleArm = hardwareMap.servo.get("wobbleArm");
+        wobbleClaw = hardwareMap.servo.get("wobbleClaw");
 
-
+        wobbleArm.setPosition(0);
+        wobbleClaw.setPosition(clawOpenPos);
     }
 
     public void loop(){
@@ -42,6 +50,25 @@ public class MecanumDrive extends OpMode {
         } else if (gamepad1.dpad_down) {
             //Reverse
             speedMode = -1;
+        }
+
+        armPosition = wobbleArm.getPosition();
+        while (gamepad1.right_trigger > 0.1 && armPosition < 1 ) {
+            armPosition += gamepad1.right_trigger * servoSpeed;
+            wobbleArm.setPosition(armPosition);
+        }
+        while (gamepad1.left_trigger > 0.1 && armPosition > 0 ) {
+            armPosition -= gamepad1.left_trigger * servoSpeed;
+            wobbleArm.setPosition(armPosition);
+        }
+        clawPosition = wobbleClaw.getPosition();
+        while (gamepad1.right_bumper && clawPosition < clawOpenPos) {
+            clawPosition += servoSpeed;
+            wobbleClaw.setPosition(clawPosition);
+        }
+        while (gamepad1.left_bumper && clawPosition > clawClosedPos) {
+            clawPosition -= servoSpeed;
+            wobbleClaw.setPosition(clawPosition);
         }
     }
 
