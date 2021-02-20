@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.util.concurrent.Callable;
 
 import static java.lang.Math.*;
 
@@ -13,19 +12,25 @@ import static java.lang.Math.*;
 
 
 public class MecanumDrive extends OpMode {
-    DcMotor leftFrontMotor, leftBackMotor, rightFrontMotor, rightBackMotor, flyWheelMotor;
-    Servo shootServo;
+
+    DcMotor leftFrontMotor, leftBackMotor, rightFrontMotor, rightBackMotor;
+    Servo wobbleArm, wobbleClaw, shootServo;
+
     double leftX, leftY;
     double LFPower,RFPower,LBPower,RBPower;
     double maxMPower;
     double speedMode = 1;
-    int rings = 1;
 
     boolean lastADown = false;
     boolean lastBDown = false;
 
     double highGoalV = 555;
     double powerShotV = 555;
+
+    double armPosition, clawPosition;
+    double clawOpenPos = 0.2;
+    double clawClosedPos = 0.05;
+    double servoSpeed = 0.5;
 
 
     public void init(){
@@ -34,29 +39,36 @@ public class MecanumDrive extends OpMode {
         rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
         rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
 
-        flyWheelMotor = hardwareMap.dcMotor.get("flyWheelMotor");
-        flyWheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-      //  flyWheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         shootServo = hardwareMap.servo.get("shootServo");
+
+
+        wobbleArm = hardwareMap.servo.get("wobbleArm");
+        wobbleClaw = hardwareMap.servo.get("wobbleClaw");
+
+        wobbleArm.setPosition(0);
+        wobbleClaw.setPosition(clawOpenPos);
 
     }
 
     public void loop(){
         mecanumDrive(gamepad1.left_stick_x,-gamepad1.left_stick_y,gamepad1.right_stick_x);
-        /**Modes depending on Dpad Input**/
-        if (gamepad1.dpad_up) {
-            //TurboMode
-            speedMode = 2;
-        } else if (gamepad1.dpad_down) {
+
+
+        //Modes depending on Dpad Input
+        if (gamepad1.dpad_right) {
             //Slow Mode
+            speedMode = 0.5;
+        } else if (gamepad1.dpad_left) {
+            //Super Slow Mode
             speedMode = 0.25;
-        } else if (gamepad1.dpad_right) {
+        } else if (gamepad1.dpad_up) {
             //Normal
             speedMode = 1;
-        } else if (gamepad1.dpad_left) {
+        } else if (gamepad1.dpad_down) {
             //Reverse
             speedMode = -1;
         }
+
 
         /**Shooting**/
         //Button Inputs
@@ -78,6 +90,25 @@ public class MecanumDrive extends OpMode {
         lastADown = gamepad1.a;
         lastBDown = gamepad1.b;
 
+
+        armPosition = wobbleArm.getPosition();
+        while (gamepad1.right_trigger > 0.1 && armPosition < 1 ) {
+            armPosition += gamepad1.right_trigger * servoSpeed;
+            wobbleArm.setPosition(armPosition);
+        }
+        while (gamepad1.left_trigger > 0.1 && armPosition > 0 ) {
+            armPosition -= gamepad1.left_trigger * servoSpeed;
+            wobbleArm.setPosition(armPosition);
+        }
+        clawPosition = wobbleClaw.getPosition();
+        while (gamepad1.right_bumper && clawPosition < clawOpenPos) {
+            clawPosition += servoSpeed;
+            wobbleClaw.setPosition(clawPosition);
+        }
+        while (gamepad1.left_bumper && clawPosition > clawClosedPos) {
+            clawPosition -= servoSpeed;
+            wobbleClaw.setPosition(clawPosition);
+        }
     }
 
     public void mecanumDrive(double leftX, double leftY,double rightX){
@@ -89,12 +120,7 @@ public class MecanumDrive extends OpMode {
         maxMPower = Math.max(max(max(abs(LFPower),abs(RFPower)),abs(RBPower)),abs(LBPower));
 
         maxMPower = maxMPower > 1 ? maxMPower : 1;
-        if (speedMode == 2) {
-            maxMPower *= speedMode;
-            maxMPower = maxMPower > 1 ? maxMPower : 1;
-        } else {
-            maxMPower *= speedMode;
-        }
+        maxMPower *= speedMode;
 
 
         LFPower /= maxMPower;
