@@ -3,38 +3,42 @@ package main.auto;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
 public class autowobble extends OpMode {
 
-    Servo wobbleServo;
-    double servoPosition = 0.0;
+    Servo wobbleArm;
+    Servo wobbleClaw;
+    double armPosition = 0.0;
+    double clawOpenPosition = 0.5;
+    double clawClosedPostion = 0.1;
 
     public void init() {
-        wobbleServo = hardwareMap.servo.get("wobbleServo");
-
+        wobbleArm = hardwareMap.servo.get("wobbleArm");
+        wobbleClaw = hardwareMap.servo.get("wobbleClaw");
     }
 
     public void start() {
-        wobbleServo.setPosition(0);
-
-        for (int i = 0; i < 1; i += 0.01) {
-            servoPosition += i;
-            wobbleServo.setPosition(servoPosition);
-
-        }
-
-        for (int i = 1; i > 0; i -= 0.01) {
-            servoPosition -= i;
-            wobbleServo.setPosition(servoPosition);
-
-        }
+        wobbleArm.setPosition(0);
+        wobbleClaw.setPosition(clawOpenPosition);
     }
 
     public void loop() {
 
     }
 
-    public void stop() {
+    public void lowerArm() {
+        wobbleArm.setPosition(1);
+    }
+
+    public void raiseArm() {
+        wobbleArm.setPosition(0);
+    }
+
+    public void closeClaw() {
+        wobbleClaw.setPosition(clawClosedPostion);
+    }
+
+    public void openClaw() {
+        wobbleClaw.setPosition(clawOpenPosition);
 
     }
 }
