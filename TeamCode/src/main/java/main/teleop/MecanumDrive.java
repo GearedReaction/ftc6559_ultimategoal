@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.util.concurrent.Callable;
+
 import static java.lang.Math.*;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Mecanum Drive", group = "Drives")
@@ -21,6 +23,10 @@ public class MecanumDrive extends OpMode {
 
     boolean lastADown = false;
     boolean lastBDown = false;
+
+    double highGoalV = 555;
+    double powerShotV = 555;
+
 
     public void init(){
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
@@ -53,29 +59,25 @@ public class MecanumDrive extends OpMode {
         }
 
         /**Shooting**/
+        //Button Inputs
         if(gamepad1.a && !lastADown){
-            shootFunction(1);
+            try {
+                shootFunction(highGoalV, 1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else if(gamepad1.b && !lastBDown){
-            shootFunction(.8);
+            try {
+                shootFunction(highGoalV, 3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
-        if(gamepad1.a){
-            lastADown = true;
-        } else {
-            lastADown = false;
-        }
+        //Button Logic
+        lastADown = gamepad1.a;
+        lastBDown = gamepad1.b;
 
-        if(gamepad1.b){
-            lastBDown = true;
-        } else {
-            lastBDown = false;
-        }
-
-        if(gamepad1.x){
-            rings = 3;
-        } else if(gamepad1.y){
-            rings = 1;
-        }
     }
 
     public void mecanumDrive(double leftX, double leftY,double rightX){
@@ -106,22 +108,14 @@ public class MecanumDrive extends OpMode {
         rightFrontMotor.setPower(RFPower);
         rightBackMotor.setPower(RBPower);
     }
-    public void shootFunction(double spinPower){
-        flyWheelMotor.setPower(spinPower);
-
-        for(int i = 0; i < rings; i++){
-            try {
-                wait(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            shootServo.setPosition(.25);
-            try {
-                wait(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            shootServo.setPosition(0);
+    public void shootFunction(double spinPower, int times) throws InterruptedException {
+        CustomPID shooter = new CustomPID();
+        shooter.spinFlyWheel(spinPower);
+            for(int i = 0; i < times; i++){
+                shootServo.setPosition(.25);
+                wait(200);
+                shootServo.setPosition(.25);
+                wait(200);
         }
 
 
