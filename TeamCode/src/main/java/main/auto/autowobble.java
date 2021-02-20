@@ -39,5 +39,6 @@ public class autowobble extends OpMode {
 
     public void openClaw() {
         wobbleClaw.setPosition(clawOpenPosition);
+
     }
 }
