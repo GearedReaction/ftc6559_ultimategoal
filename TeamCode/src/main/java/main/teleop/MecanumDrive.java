@@ -53,26 +53,21 @@ public class MecanumDrive extends OpMode {
     public void loop(){
         mecanumDrive(gamepad1.left_stick_x,-gamepad1.left_stick_y,gamepad1.right_stick_x);
 
-
-        //Modes depending on Dpad Input
+        /** Drive Modes **/
         if (gamepad1.dpad_right) {
-            //Slow Mode
             speedMode = 0.5;
         } else if (gamepad1.dpad_left) {
-            //Super Slow Mode
             speedMode = 0.25;
         } else if (gamepad1.dpad_up) {
-            //Normal
             speedMode = 1;
         } else if (gamepad1.dpad_down) {
-            //Reverse
             speedMode = -1;
         }
 
 
         /**Shooting**/
         //Button Inputs
-        if(gamepad1.a && !lastADown){
+        if(gamepad2.a && !lastADown){
             try {
                 shootFunction(highGoalV, 1);
             } catch (InterruptedException e) {
