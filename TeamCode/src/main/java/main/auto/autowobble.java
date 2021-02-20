@@ -26,6 +26,18 @@ public class autowobble extends OpMode {
     }
 
     public void lowerArm() {
+        wobbleArm.setPosition(1);
+    }
 
+    public void raiseArm() {
+        wobbleArm.setPosition(0);
+    }
+
+    public void closeClaw() {
+        wobbleClaw.setPosition(clawClosedPostion);
+    }
+
+    public void openClaw() {
+        wobbleClaw.setPosition(clawOpenPosition);
     }
 }
