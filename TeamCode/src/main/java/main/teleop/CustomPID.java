@@ -13,6 +13,8 @@ import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENC
 
 public class CustomPID extends DriveFunction {
 
+    private final int COUNTS_PER_REVOLUTION = 28;
+
     DcMotor flyWheel;
     double integral = 0;
     double reps = 0;
@@ -27,7 +29,7 @@ public class CustomPID extends DriveFunction {
         flyWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         flyWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-       //waitForStart();
+
     }
 
     void spinFlyWheel(double targetVelocity) throws InterruptedException {
@@ -37,10 +39,13 @@ public class CustomPID extends DriveFunction {
         double lastError = 0;
 
 
-        while(targetVelocity != Math.abs(velocity-0.5) && reps < 40){ //9 is not important just needs to be a number
+       // while(targetVelocity != Math.abs(velocity-0.5) && Maxreps > 0){
+        /**Use above line for actual and below line for finding coefficients**/
+        while(true){
             setMotorRunMode(RUN_USING_ENCODER);
-            velocity = flyWheel.getCurrentPosition() / PIDTimer.time();
-            error = targetVelocity * 12 / (8 * 3.1415926535) * 360 - velocity;
+            velocity = (flyWheel.getCurrentPosition() / COUNTS_PER_REVOLUTION) / PIDTimer.time();
+            error = targetVelocity - velocity;
+            //error = targetVelocity * 28 / (8 * 3.14159265) * 360 - velocity;
             double deltaError = lastError - error;
             integral += deltaError * PIDTimer.time();
             double derivative = deltaError / PIDTimer.time();
