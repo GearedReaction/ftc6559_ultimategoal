@@ -11,6 +11,8 @@ public class GlobalCoordinates implements Runnable {
 
     DcMotor leftEnc, rightEnc, midEnc;
 
+    double x = 0;
+
     boolean isRunning = true;
 
     double leftEncoderPosition, rightEncoderPosition, middleEncoderPosition;
@@ -37,8 +39,11 @@ public class GlobalCoordinates implements Runnable {
     }
 
     public void positionUpdate(){
+
         leftEncoderPosition = leftEnc.getCurrentPosition();
-        rightEncoderPosition = rightEnc.getCurrentPosition();
+        rightEncoderPosition = -rightEnc.getCurrentPosition();
+
+        x = 10 + robotOrientation;
 
         double leftChange = leftEncoderPosition - OLDLeftEncoderPosition;
         double rightChange = rightEncoderPosition - OLDRightEncoderPosition;
@@ -56,6 +61,7 @@ public class GlobalCoordinates implements Runnable {
         globalX = sides * Math.sin(robotOrientation) + frontBack * Math.cos(robotOrientation);
         globalY = sides * Math.cos(robotOrientation) - frontBack * Math.sin(robotOrientation);
 
+
         OLDLeftEncoderPosition = leftEncoderPosition;
         OLDRightEncoderPosition = rightEncoderPosition;
         OLDMiddleEncoderPosition = middleEncoderPosition;
@@ -63,6 +69,7 @@ public class GlobalCoordinates implements Runnable {
 
     public double returnXCoordinate(){ return globalX;}
     public double returnYCoordinate(){ return globalY;}
+    public double returnValue(){ return x;}
     public double returnOrientation(){ return Math.toDegrees(robotOrientation) % 360;}
 
     public void stop(){ isRunning = false;}

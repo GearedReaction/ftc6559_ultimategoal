@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
@@ -11,20 +12,20 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 import java.io.File;
 
-@Autonomous
+@Autonomous(name = "OdomCalibration", group = "Odometry")
 public class OdomCalibration extends LinearOpMode {
 
     DcMotor leftFront, leftBack, rightFront, rightBack;
-    DcMotor leftEnc, rightEnc, midEnc;
+    //DcMotor leftEnc, rightEnc, midEnc;
 
     BNO055IMU imu;
 
     ElapsedTime timer = new ElapsedTime();
 
-    static final double calibrationSpeed = 0.5;
+    static final double calibrationSpeed = 0;
 
     static final double TICKS_PER_REV = 8192;
-    static final double WHEEL_DIAMETER = 100/25.4;
+    static final double WHEEL_DIAMETER = 38/25.4;
 
     static final double TICKS_PER_INCH = WHEEL_DIAMETER * Math.PI / TICKS_PER_REV;
 
@@ -34,13 +35,18 @@ public class OdomCalibration extends LinearOpMode {
     public void runOpMode(){
 
         leftFront = hardwareMap.dcMotor.get("leftFront");
-        rightFront = hardwareMap.dcMotor.get("rightFront");
         leftBack = hardwareMap.dcMotor.get("leftBack");
+        rightFront = hardwareMap.dcMotor.get("rightFront");
         rightBack = hardwareMap.dcMotor.get("rightBack");
 
-        leftEnc = hardwareMap.dcMotor.get("leftEnc");
-        midEnc = hardwareMap.dcMotor.get("midEnc");
-        rightEnc = hardwareMap.dcMotor.get("rightEnc");
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        telemetry.addData("Left: ", rightFront.getCurrentPosition());
+        telemetry.addData("Mid: ", leftBack.getCurrentPosition());
+        telemetry.addData("Right: ", rightBack.getCurrentPosition());
+        telemetry.update();
+
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -61,6 +67,8 @@ public class OdomCalibration extends LinearOpMode {
         waitForStart();
 
         while(imu.getAngularOrientation().firstAngle < 90 && opModeIsActive()){
+            telemetry.addData("Orientation: ", imu.getAngularOrientation().firstAngle);
+            telemetry.update();
             leftFront.setPower(calibrationSpeed);
             leftBack.setPower(calibrationSpeed);
             rightFront.setPower(calibrationSpeed);
@@ -90,10 +98,10 @@ public class OdomCalibration extends LinearOpMode {
         }
 
         double angle = imu.getAngularOrientation().firstAngle;
-        double encoderDifference = Math.abs(Math.abs(leftEnc.getCurrentPosition()) - Math.abs(rightEnc.getCurrentPosition()));
+        double encoderDifference = Math.abs(Math.abs(rightFront.getCurrentPosition()) -(-Math.abs(rightBack.getCurrentPosition())));
         double sideEncoderTickOffset = encoderDifference / angle;
         double sideWheelSeparation = (180 * sideEncoderTickOffset) / (TICKS_PER_INCH * Math.PI);
-        double middleTickOffset = midEnc.getCurrentPosition() / Math.toRadians(imu.getAngularOrientation().firstAngle);
+        double middleTickOffset = leftBack.getCurrentPosition() / Math.toRadians(imu.getAngularOrientation().firstAngle);
 
         ReadWriteFile.writeFile(sideWheelsSeparationFile, String.valueOf(sideWheelSeparation));
         ReadWriteFile.writeFile(middleTickOffsetFile, String.valueOf(middleTickOffset));
@@ -112,13 +120,13 @@ public class OdomCalibration extends LinearOpMode {
 
 
     void resetOdomEncoders(){
-        leftEnc.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightEnc.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        midEnc.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftEnc.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightEnc.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        midEnc.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 
