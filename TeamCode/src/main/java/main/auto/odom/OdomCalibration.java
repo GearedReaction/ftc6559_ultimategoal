@@ -25,7 +25,7 @@ public class OdomCalibration extends LinearOpMode {
     static final double calibrationSpeed = 0;
 
     static final double TICKS_PER_REV = 8192;
-    static final double WHEEL_DIAMETER = 38/25.4;
+    static final double WHEEL_DIAMETER = 100/25.4;
 
     static final double TICKS_PER_INCH = WHEEL_DIAMETER * Math.PI / TICKS_PER_REV;
 
@@ -69,21 +69,21 @@ public class OdomCalibration extends LinearOpMode {
         while(imu.getAngularOrientation().firstAngle < 90 && opModeIsActive()){
             telemetry.addData("Orientation: ", imu.getAngularOrientation().firstAngle);
             telemetry.update();
-            leftFront.setPower(calibrationSpeed);
-            leftBack.setPower(calibrationSpeed);
-            rightFront.setPower(calibrationSpeed);
-            rightBack.setPower(calibrationSpeed);
+            leftFront.setPower(-calibrationSpeed);
+            leftBack.setPower(-calibrationSpeed);
+            rightFront.setPower(-calibrationSpeed);
+            rightBack.setPower(-calibrationSpeed);
             if(imu.getAngularOrientation().firstAngle < 60) {
-                leftFront.setPower(calibrationSpeed);
-                leftBack.setPower(calibrationSpeed);
-                rightFront.setPower(calibrationSpeed);
-                rightBack.setPower(calibrationSpeed);
+                leftFront.setPower(-calibrationSpeed);
+                leftBack.setPower(-calibrationSpeed);
+                rightFront.setPower(-calibrationSpeed);
+                rightBack.setPower(-calibrationSpeed);
             }
             else{
-                leftFront.setPower(calibrationSpeed / 2);
-                leftBack.setPower(calibrationSpeed / 2);
-                rightFront.setPower(calibrationSpeed / 2);
-                rightBack.setPower(calibrationSpeed / 2);
+                leftFront.setPower(-calibrationSpeed / 2);
+                leftBack.setPower(-calibrationSpeed / 2);
+                rightFront.setPower(-calibrationSpeed / 2);
+                rightBack.setPower(-calibrationSpeed / 2);
             }
         }
         leftFront.setPower(0);
@@ -98,7 +98,7 @@ public class OdomCalibration extends LinearOpMode {
         }
 
         double angle = imu.getAngularOrientation().firstAngle;
-        double encoderDifference = Math.abs(Math.abs(rightFront.getCurrentPosition()) -(-Math.abs(rightBack.getCurrentPosition())));
+        double encoderDifference = Math.abs(Math.abs(rightFront.getCurrentPosition()) - Math.abs(rightBack.getCurrentPosition()));
         double sideEncoderTickOffset = encoderDifference / angle;
         double sideWheelSeparation = (180 * sideEncoderTickOffset) / (TICKS_PER_INCH * Math.PI);
         double middleTickOffset = leftBack.getCurrentPosition() / Math.toRadians(imu.getAngularOrientation().firstAngle);

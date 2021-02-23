@@ -13,6 +13,8 @@ public class GlobalCoordinates implements Runnable {
 
     double x = 0;
 
+
+
     boolean isRunning = true;
 
     double leftEncoderPosition, rightEncoderPosition, middleEncoderPosition;
@@ -40,8 +42,10 @@ public class GlobalCoordinates implements Runnable {
 
     public void positionUpdate(){
 
+        /****/
         leftEncoderPosition = leftEnc.getCurrentPosition();
         rightEncoderPosition = -rightEnc.getCurrentPosition();
+        /****/
 
         x = 10 + robotOrientation;
 
@@ -51,16 +55,21 @@ public class GlobalCoordinates implements Runnable {
         changeInOrientation = (leftChange - rightChange) / encoderWheelDistance;
         robotOrientation += changeInOrientation;
 
+        /****/
         middleEncoderPosition = midEnc.getCurrentPosition();
+        /****/
         double rawHorizontalChange = middleEncoderPosition - OLDMiddleEncoderPosition;
         double horizontalChange = rawHorizontalChange - (changeInOrientation * middleEncoderTickOffset);
 
         double sides = (rightChange + leftChange)/2;
-        double frontBack = horizontalChange;
 
-        globalX = sides * Math.sin(robotOrientation) + frontBack * Math.cos(robotOrientation);
-        globalY = sides * Math.cos(robotOrientation) - frontBack * Math.sin(robotOrientation);
-
+//        if(sides != 0 && horizontalChange != 0) {
+            globalX = globalX + (sides * Math.sin(robotOrientation) + horizontalChange * Math.cos(robotOrientation));
+            globalY = globalY + (sides * Math.cos(robotOrientation) - horizontalChange * Math.sin(robotOrientation));
+//        } else {
+//            globalX = globalX;
+//            globalY = globalY;
+//        }
 
         OLDLeftEncoderPosition = leftEncoderPosition;
         OLDRightEncoderPosition = rightEncoderPosition;
