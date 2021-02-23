@@ -1,12 +1,13 @@
 package main.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import main.teleop.WobbleArmClass;
 
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Mecanum Drive", group = "Drives")
 
@@ -32,6 +33,7 @@ public class MecanumDrive extends OpMode {
     double clawClosedPos = 0.05;
     double servoSpeed = 0.5;
 
+    WobbleArmClass wobbleArm2 =  new WobbleArmClass();
 
     public void init(){
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
@@ -41,12 +43,6 @@ public class MecanumDrive extends OpMode {
 
         shootServo = hardwareMap.servo.get("shootServo");
 
-
-        wobbleArm = hardwareMap.servo.get("wobbleArm");
-        wobbleClaw = hardwareMap.servo.get("wobbleClaw");
-
-        wobbleArm.setPosition(0);
-        wobbleClaw.setPosition(clawOpenPos);
 
     }
 
@@ -88,21 +84,17 @@ public class MecanumDrive extends OpMode {
 
         armPosition = wobbleArm.getPosition();
         while (gamepad1.right_trigger > 0.1 && armPosition < 1 ) {
-            armPosition += gamepad1.right_trigger * servoSpeed;
-            wobbleArm.setPosition(armPosition);
+            wobbleArm2.lowerArmTeleop();
         }
         while (gamepad1.left_trigger > 0.1 && armPosition > 0 ) {
-            armPosition -= gamepad1.left_trigger * servoSpeed;
-            wobbleArm.setPosition(armPosition);
+            wobbleArm2.raiseArmTeleop();
         }
         clawPosition = wobbleClaw.getPosition();
-        while (gamepad1.right_bumper && clawPosition < clawOpenPos) {
-            clawPosition += servoSpeed;
-            wobbleClaw.setPosition(clawPosition);
+        if (gamepad1.right_bumper && clawPosition < clawOpenPos) {
+            wobbleArm2.openClaw();
         }
         while (gamepad1.left_bumper && clawPosition > clawClosedPos) {
-            clawPosition -= servoSpeed;
-            wobbleClaw.setPosition(clawPosition);
+            wobbleArm2.closeClaw();
         }
     }
 

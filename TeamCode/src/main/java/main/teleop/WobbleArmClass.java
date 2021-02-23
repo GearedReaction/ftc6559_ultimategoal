@@ -2,20 +2,23 @@ package main.teleop;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class WobbleArmClass extends DriveFunction {
+public class WobbleArmClass extends MecanumDrive {
 
     Servo wobbleArm;
     Servo wobbleClaw;
-    double armPosition = 0.0;
-    double clawOpenPosition = 0.5;
-    double clawClosedPostion = 0.1;
 
-    @Override
-    public void runAutonomous() {
+    public void init() {
         wobbleArm = hardwareMap.servo.get("wobbleArm");
         wobbleClaw = hardwareMap.servo.get("wobbleClaw");
     }
 
+    public void start() {
+        wobbleArm.setPosition(0);
+        wobbleClaw.setPosition(clawOpenPos);
+    }
+
+
+    /** Autonomous **/
     public void lowerArm() {
         wobbleArm.setPosition(1);
     }
@@ -25,13 +28,23 @@ public class WobbleArmClass extends DriveFunction {
     }
 
     public void closeClaw() {
-        wobbleClaw.setPosition(clawClosedPostion);
+        wobbleClaw.setPosition(clawClosedPos);
     }
 
     public void openClaw() {
-        wobbleClaw.setPosition(clawOpenPosition);
-
+        wobbleClaw.setPosition(clawOpenPos);
     }
 
+    /** TeleOP **/
+
+    public void raiseArmTeleop() {
+        armPosition += gamepad1.right_trigger * servoSpeed;
+        wobbleArm.setPosition(armPosition);
+    }
+
+    public void lowerArmTeleop() {
+        armPosition -= gamepad1.left_trigger * servoSpeed;
+        wobbleArm.setPosition(armPosition);
+    }
 
 }
