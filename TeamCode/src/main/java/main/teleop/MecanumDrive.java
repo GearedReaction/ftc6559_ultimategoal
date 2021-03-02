@@ -32,7 +32,7 @@ public class MecanumDrive extends OpMode {
     double clawClosedPos = 0.05;
     double servoSpeed = 0.5;
 
-
+//delete this comment
     public void init(){
         leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
         leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
