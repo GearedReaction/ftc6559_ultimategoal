@@ -81,7 +81,7 @@ public class MecanumDrive extends OpMode {
         lastADown = gamepad1.a;
         lastBDown = gamepad1.b;
 
-
+        /** Wobble Arm **/
         armPosition = wobbleArm.getPosition();
         while (gamepad1.right_trigger > 0.1 && armPosition < 1 ) {
             wobbleArm2.lowerArmTeleop();
