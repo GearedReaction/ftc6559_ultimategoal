@@ -22,6 +22,10 @@ public class MecanumDrive extends OpMode {
     double maxMPower;
     double speedMode = 1;
 
+    boolean lastLTrigger = false;
+    boolean lastRTrigger = false;
+    boolean lastLBump = false;
+    boolean lastRBump = false;
     boolean lastADown = false;
     boolean lastBDown = false;
 
@@ -83,19 +87,30 @@ public class MecanumDrive extends OpMode {
 
         /** Wobble Arm **/
         armPosition = wobbleArm.getPosition();
-        while (gamepad1.right_trigger > 0.1 && armPosition < 1 ) {
-            wobbleArm2.lowerArmTeleop();
+        if (gamepad1.right_trigger > 0.1 && armPosition < 1 && !lastRTrigger ) {
+            wobbleArm2.lowerArm();
+            lastRTrigger = true;
         }
-        while (gamepad1.left_trigger > 0.1 && armPosition > 0 ) {
-            wobbleArm2.raiseArmTeleop();
+        if (gamepad1.left_trigger > 0.1 && armPosition > 0 && !lastLTrigger ) {
+            wobbleArm2.raiseArm();
+            lastLTrigger = true;
         }
+
         clawPosition = wobbleClaw.getPosition();
-        if (gamepad1.right_bumper && clawPosition < clawOpenPos) {
+        if (gamepad1.right_bumper && clawPosition < clawOpenPos && !lastRBump) {
             wobbleArm2.openClaw();
+            lastRBump = true;
         }
-        while (gamepad1.left_bumper && clawPosition > clawClosedPos) {
+        while (gamepad1.left_bumper && clawPosition > clawClosedPos && !lastLBump) {
             wobbleArm2.closeClaw();
+            lastLBump = true;
         }
+
+        if (gamepad1.right_trigger > 0.1 && lastRTrigger) { lastRTrigger = false; }
+        if (gamepad1.left_trigger > 0.1 && lastLTrigger) { lastLTrigger = false; }
+
+        if (gamepad1.right_bumper && lastRBump) { lastRBump = false; }
+        if (gamepad1.left_bumper && lastLBump) { lastLBump = false; }
     }
 
     public void mecanumDrive(double leftX, double leftY,double rightX){
