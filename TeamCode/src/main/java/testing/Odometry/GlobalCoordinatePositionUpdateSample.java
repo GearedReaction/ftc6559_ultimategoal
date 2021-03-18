@@ -9,17 +9,20 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * Created by Sarthak on 6/1/2019.
  * Example OpMode that runs the GlobalCoordinatePosition thread and accesses the (x, y, theta) coordinate values
  */
-@TeleOp(name = "Global Coordinate Position Test", group = "Calibration")
+@TeleOp(name = "Base Global Coordinate Position Test", group = "Calibration")
 public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
 
     //Odometry encoder wheels
     DcMotor verticalRight, verticalLeft, horizontal;
 
     //The amount of encoder ticks for each inch the robot moves. This will change for each robot and needs to be changed here
-    final double COUNTS_PER_INCH = 2080.768;
+    final double COUNTS_PER_INCH = 662.329;
+
+    final double Y_TICKS_DIVIDER = 1625;
+    final double X_TICKS_DIVIDER = 1700;
 
     //Hardware map names for the encoder wheels. Again, these will change for each robot and need to be updated below
-    String verticalLeftEncoderName = "rightFront", verticalRightEncoderName = "rightBack", horizontalEncoderName = "leftBack";
+    String verticalLeftEncoderName = "leftFront", verticalRightEncoderName = "leftBack", horizontalEncoderName = "rightBack";
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -66,8 +69,8 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
 
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates
-            telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / COUNTS_PER_INCH);
-            telemetry.addData("Y Position", globalPositionUpdate.returnYCoordinate() / COUNTS_PER_INCH);
+            telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / X_TICKS_DIVIDER);
+            telemetry.addData("Y Position", globalPositionUpdate.returnYCoordinate() / Y_TICKS_DIVIDER);
             telemetry.addData("Orientation (Degrees)", globalPositionUpdate.returnOrientation());
             telemetry.addData("Thread Active", positionThread.isAlive());
             telemetry.update();

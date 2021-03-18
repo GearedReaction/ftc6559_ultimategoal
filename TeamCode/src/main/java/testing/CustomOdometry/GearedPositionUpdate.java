@@ -13,7 +13,7 @@ import static java.lang.Math.PI;
  * Created by Sarthak on 6/1/2019.
  * Example OpMode that runs the GlobalCoordinatePosition thread and accesses the (x, y, theta) coordinate values
  */
-@TeleOp(name = "Global Coordinate Position Test", group = "Calibration")
+@TeleOp(name = "Geared Position Tracking Test", group = "Geared")
 public class GearedPositionUpdate extends LinearOpMode {
 
     //Odometry encoder wheels
@@ -27,7 +27,7 @@ public class GearedPositionUpdate extends LinearOpMode {
     public static final double TICKS_PER_INCH = TICKS_PER_REVOLUTION / (PI * ENCODER_WHEEL_DIAMETER);
 
     //Hardware map names for the encoder wheels. Again, these will change for each robot and need to be updated below
-    String verticalLeftEncoderName = "rightFront", verticalRightEncoderName = "rightBack", horizontalEncoderName = "leftBack";
+    String verticalLeftEncoderName = "leftFront", verticalRightEncoderName = "leftBack", horizontalEncoderName = "rightBack";
 
     @Override
     public void runOpMode() throws InterruptedException {

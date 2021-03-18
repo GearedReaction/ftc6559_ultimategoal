@@ -19,7 +19,7 @@ import java.io.File;
  * Odometry system calibration. Run this OpMode to generate the necessary constants to calculate the robot's global position on the field.
  * The Global Positioning Algorithm will not function and will throw an error if this program is not run first
  */
-@TeleOp(name = "Odometry System Calibration", group = "Calibration")
+@TeleOp(name = "Base Odometry System Calibration", group = "Calibration")
 public class OdometryCalibration extends LinearOpMode {
     //Drive motors
     DcMotor leftFront, rightFront, leftBack, rightBack;
@@ -31,12 +31,12 @@ public class OdometryCalibration extends LinearOpMode {
 
     //Hardware Map Names for drive motors and odometry wheels. THIS WILL CHANGE ON EACH ROBOT, YOU NEED TO UPDATE THESE VALUES ACCORDINGLY
     String rfName = "rightFront", rbName = "rightBack", lfName = "leftFront", lbName = "leftBack";
-    String verticalLeftEncoderName = rfName, verticalRightEncoderName = rbName, horizontalEncoderName = lbName;
+    String verticalLeftEncoderName = lfName, verticalRightEncoderName = lbName, horizontalEncoderName = rbName;
 
-    final double PIVOT_SPEED = 0.5;
+    final double PIVOT_SPEED = -0.5;
 
     //The amount of encoder ticks for each inch the robot moves. THIS WILL CHANGE FOR EACH ROBOT AND NEEDS TO BE UPDATED HERE
-    final double COUNTS_PER_INCH = 2080.768;
+    final double COUNTS_PER_INCH = 662.329;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -76,10 +76,10 @@ public class OdometryCalibration extends LinearOpMode {
         while(getZAngle() < 90 && opModeIsActive()){
             rightFront.setPower(-PIVOT_SPEED);
             rightBack.setPower(-PIVOT_SPEED);
-            leftFront.setPower(-PIVOT_SPEED);
+            leftFront.setPower(PIVOT_SPEED);
             leftBack.setPower(PIVOT_SPEED);
             if(getZAngle() < 60) {
-                setPowerAll(-PIVOT_SPEED, -PIVOT_SPEED, -PIVOT_SPEED, PIVOT_SPEED);
+                setPowerAll(-PIVOT_SPEED, -PIVOT_SPEED, PIVOT_SPEED, PIVOT_SPEED);
             }else{
                 setPowerAll(-PIVOT_SPEED/2, -PIVOT_SPEED/2, PIVOT_SPEED/2, PIVOT_SPEED/2);
 

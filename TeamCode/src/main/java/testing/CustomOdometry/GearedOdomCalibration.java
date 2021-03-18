@@ -2,6 +2,7 @@ package testing.CustomOdometry;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -14,6 +15,7 @@ import java.io.File;
 
 import static java.lang.Math.*;
 
+@Autonomous (name = "Geared Odom Calibration", group = "Geared")
 public class GearedOdomCalibration extends LinearOpMode {
 
     //Encoder Coefficients for math
@@ -45,7 +47,7 @@ public class GearedOdomCalibration extends LinearOpMode {
 
 
     //Define which motor port the odometry encoders are in
-    String leftMotorName = "rightfront", midMotorName = "leftBack", rightMotorName = "rightBack";
+    String leftMotorName = "leftFront", midMotorName = "rightBack", rightMotorName = "leftBack";
 
 
     //Create a timer for calibration
@@ -103,27 +105,29 @@ public class GearedOdomCalibration extends LinearOpMode {
 
         waitForStart();
 
-        while(opModeIsActive() && orientation < 90)
+        while(opModeIsActive() && imu.getAngularOrientation().firstAngle < 90)
         {
             if(orientation > 60) {
                 leftFront.setPower(calibrationPower/2);
                 leftBack.setPower(calibrationPower/2);
-                rightFront.setPower(calibrationPower/2);
-                rightBack.setPower(calibrationPower/2);
+                rightFront.setPower(-calibrationPower/2);
+                rightBack.setPower(-calibrationPower/2);
             }
             else {
                 leftFront.setPower(calibrationPower);
                 leftBack.setPower(calibrationPower);
-                rightFront.setPower(calibrationPower);
-                rightBack.setPower(calibrationPower);
+                rightFront.setPower(-calibrationPower);
+                rightBack.setPower(-calibrationPower);
             }
+
+            telemetry.addData("Orientation: ", orientation);
         }
         leftFront.setPower(0);
         rightFront.setPower(0);
         leftBack.setPower(0);
         rightBack.setPower(0);
 
-        angle = orientation;
+        angle = imu.getAngularOrientation().firstAngle;
 
         timer.reset();
         while(timer.milliseconds() < 1000){
@@ -134,7 +138,7 @@ public class GearedOdomCalibration extends LinearOpMode {
         telemetry.addData("Assigning Angle to Orientation:", "Complete");
         telemetry.clear();
 
-        horizontalTickOffset = mid.getCurrentPosition() / toRadians(angle);
+        horizontalTickOffset = -mid.getCurrentPosition() / toRadians(angle);
 
         int encoderDifference = abs(left.getCurrentPosition()) + abs(right.getCurrentPosition());
         double inchesTraveled = encoderDifference / TICKS_PER_INCH;
@@ -150,12 +154,20 @@ public class GearedOdomCalibration extends LinearOpMode {
             telemetry.clear();
         }
 
-        telemetry.addData("Calculating Coefficients", "Complete");
-        telemetry.clear();
+        while(opModeIsActive()){
+            telemetry.addData("Odometry System Calibration Status", "Calibration Complete");
+            //Display calculated constants
+            telemetry.addData("Wheel Base Separation", wheelBaseSeparation);
+            telemetry.addData("Horizontal Encoder Offset", horizontalTickOffset);
 
-        telemetry.addData("HorizontalTickOffset", horizontalTickOffset);
-        telemetry.addData("WheelbaseSeparation", wheelBaseSeparation);
-        telemetry.clear();
+            //Display raw values
+            telemetry.addData("Robot Orientation: ", angle);
+
+
+            //Update values
+            telemetry.update();
+        }
+
 
 
     }
