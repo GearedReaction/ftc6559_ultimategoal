@@ -13,7 +13,11 @@ import static java.lang.Math.PI;
  * Created by Sarthak on 6/1/2019.
  * Example OpMode that runs the GlobalCoordinatePosition thread and accesses the (x, y, theta) coordinate values
  */
+<<<<<<< HEAD
 @TeleOp(name = "Geared Position Tracking Test", group = "Geared")
+=======
+@TeleOp(name = "Geared Coordinate Position Test", group = "Calibration")
+>>>>>>> 864af6f6cdc8d182e3bead1a1081c2d8170f49a2
 public class GearedPositionUpdate extends LinearOpMode {
 
     //Odometry encoder wheels
