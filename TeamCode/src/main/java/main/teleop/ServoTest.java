@@ -12,8 +12,8 @@ public class ServoTest extends OpMode {
     int servoPosition = 0;
 
     public void init() {
-        myServo = hardwareMap.servo.get("myServo");
-        myServo2 = hardwareMap.servo.get("myServo2");
+        myServo = hardwareMap.servo.get("wobbleArm");
+        myServo2 = hardwareMap.servo.get("wobbleClaw");
     }
 
     public void start() {
