@@ -10,6 +10,7 @@ public class ServoTest extends OpMode {
     Servo myServo;
     Servo myServo2;
     int servoPosition = 0;
+    int clawPos = 0;
 
     public void init() {
         myServo = hardwareMap.servo.get("wobbleArm");
@@ -18,7 +19,8 @@ public class ServoTest extends OpMode {
 
     public void start() {
         myServo.setPosition(servoPosition);
-        telemetry.addData("Servo Position: ", servoPosition);
+        myServo2.setPosition(clawPos);
+        telemetry.addData("Arm Position: ", servoPosition);
     }
 
     public void loop() {
@@ -35,6 +37,16 @@ public class ServoTest extends OpMode {
             myServo.setPosition(servoPosition);
         }
 
+        while (gamepad1.right_bumper) {
+            clawPos += 0.1;
+            myServo2.setPosition(clawPos);
+        }
+
+        while (gamepad1.left_bumper) {
+            clawPos -= 0.1;
+            myServo2.setPosition(clawPos);
+        }
+
         if (gamepad1.b) {
             servoPosition = 0;
             myServo.setPosition(servoPosition);
@@ -43,6 +55,16 @@ public class ServoTest extends OpMode {
         if (gamepad1.a) {
             servoPosition = 1;
             myServo.setPosition(servoPosition);
+        }
+
+        if (gamepad1.x) {
+            clawPos = 0;
+            myServo2.setPosition(servoPosition);
+        }
+
+        if (gamepad1.y) {
+            clawPos = 1;
+            myServo2.setPosition(servoPosition);
         }
 
     }
